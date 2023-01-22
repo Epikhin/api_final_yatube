@@ -48,7 +48,7 @@ class FollowViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = get_object_or_404(User, username=self.request.user)
-        queryset_2 = user.follower.all()
+        queryset_2 = user.follower.all().select_related("following")
         return queryset_2
 
     def perform_create(self, serializer):
