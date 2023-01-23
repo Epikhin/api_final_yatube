@@ -40,8 +40,8 @@ class CommentViewSet(viewsets.ModelViewSet):
         return post.comments.all().select_related("author")
 
 
-class FollowViewSet(mixins.ListModelMixin, 
-    mixins.CreateModelMixin, viewsets.GenericViewSet):
+class FollowViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
+                    viewsets.GenericViewSet):
     serializer_class = FollowSerializer
     filter_backends = (filters.SearchFilter, )
     search_fields = ('following__username',)
