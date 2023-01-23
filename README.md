@@ -52,3 +52,5 @@ python3 manage.py runserver
 /api/v1/posts/ (GET, POST, PUT, PATCH, DELETE)
 
 При отправке запроса передавайте токен в заголовке Authorization: Bearer <токен>
+
+Автор: Епихин Александр
