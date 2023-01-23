@@ -1,6 +1,6 @@
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, mixins
 from django.shortcuts import get_object_or_404
-from posts.models import Post, Group, Follow, User
+from posts.models import Post, Group, User
 from api.permissions import AutorOnly
 from .serializers import (PostSerializer, GroupSerializer,
                           CommentSerializer, FollowSerializer)
@@ -21,7 +21,7 @@ class PostViewSet(viewsets.ModelViewSet):
 class GroupViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, AutorOnly]
+    permission_classes = [AutorOnly, ]
 
 
 class CommentViewSet(viewsets.ModelViewSet):
@@ -40,10 +40,13 @@ class CommentViewSet(viewsets.ModelViewSet):
         return post.comments.all().select_related("author")
 
 
-class FollowViewSet(viewsets.ModelViewSet):
+class FollowViewSet(mixins.ListModelMixin, 
+                    mixins.CreateModelMixin, 
+                    viewsets.GenericViewSet):
     serializer_class = FollowSerializer
     filter_backends = (filters.SearchFilter, )
     search_fields = ('following__username',)
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         user = get_object_or_404(User, username=self.request.user)
@@ -52,4 +55,3 @@ class FollowViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
-        super(FollowViewSet, self).perform_create(serializer)
