@@ -1,56 +1,119 @@
-# Описание
-Проект представляет собой API для проекта yatube.
+# Учебный проект: написние API для соц.сети Yatube.
 
-Ключевые моменты:
+Проект создавался для отработки написания REST API.
+В проектет реализован CRUD, который позволяет создавать, удалять, редактировать свои посты, а также комментировать и просматривать чужие. Аутентификация реализована по токену TokenAuthentication.
 
-Применены вьюсеты.
+В этом проекте исключен фронтенд и вью функции
+### Технологии:
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+![Django](https://img.shields.io/badge/django-%23092E20.svg?style=for-the-badge&logo=django&logoColor=white)
+![DjangoREST](https://img.shields.io/badge/DJANGO-REST-ff1709?style=for-the-badge&logo=django&logoColor=white&color=ff1709&labelColor=gray)
+### Как запустить проект:
+1. Клонировать репозиторий и перейти в созданую дерикторию в командной строке:
+   ```
+   git clone git@github.com:evgenii-erokhin/api_for_yatube.git
+   ```
+   ```
+   cd api_for_yatube
+   ```
+2. Cоздать и активировать виртуальное окружение:
 
-Для аутентификации использованы JWT-токены.
+* Если у вас **Windows**:
+  ```
+  python -m venv venv
+  ```
+  ```
+  source venv/Scripts/activate
+  ```
+* Если у вас **Linux** или **macOS**:
+  ```
+  python3 -m venv venv
+  ```
+  ```
+  source venv/bib/activate
+  ```
+3. Установоить зависимости:
+   ```
+   pip install -r requirements.txt
+   ```
 
-У неаутентифицированных пользователей доступ к API только для чтения. Исключение — эндпоинт /follow/.
+4. Выполнить миграции:
+   ```
+   python manage.py migrate
+   ```
 
-Аутентифицированным пользователям разрешено изменение и удаление своего контента; в остальных случаях доступ предоставляется только для чтения.
+6. Запустить проект:
+   ```
+   python manage.py runserver
+   ```
+  
+### Примеры запросов для аутентифицированных пользователей:
+1. `POST` запрос на эндпоинт - http://127.0.0.1:8000/api/v1/posts/
 
-Клонировать репозиторий и перейти в него в командной строке:
-```
-git clone git@github.com:Epikhin/api_final_yatube.git
-```
-Cоздать и активировать виртуальное окружение:
-```
-python3 -m venv env
-```
-```
-source env/bin/activate
-```
-Установить зависимости из файла requirements.txt:
-```
-python3 -m pip install --upgrade pip
-```
-```
-pip install -r requirements.txt
-```
-Выполнить миграции:
-```
-python manage.py makemigrations
-```
-```
-python3 manage.py migrate
-```
+   Тело запроса:
+   ```
+   {
+    "text": "Текст поста.",
+    "group": 1
+   } 
+   ```
+    Ответ эндпоинта:
+    ```
+    {
+    "id": 1,
+    "text": "Текст поста 1.",
+    "author": "superuser",
+    "image": null,
+    "group": 1,
+    "pub_date": "2023-08-09T08:47:11.084589Z"
+   } 
+    ```
+3. `GET` запрос на эндпоинт - http://127.0.0.1:8000/api/v1/groups/3/
 
-Запустить проект:
-```
-python3 manage.py runserver
-```
-Пример использования API:
+   Ответ эндпоинта:
+   ```
+   {
+    "id": 3,
+    "title": "Название группы 3",
+    "slug": "slug-группы 3",
+    "description": "Описание группы 3"
+   } 
+   ```
+### Примеры запросов для неаутентифицированных пользователей:
+1. `GET` запрос на эндпоинт - http://127.0.0.1:8000/api/v1/posts/
+   
+   ```
+   [
+   {
+        "id": 1,
+        "author": "superuser",
+        "image": null,
+        "text": "Текст поста 1.",
+        "pub_date": "2023-08-09T08:47:11.084589Z",
+        "group": 1
+   },
+   {
+        "id": 2,
+        "author": "test_user",
+        "image": "http://127.0.0.1:8000/media/posts/photo_2023-08-08_12.14.10.jpeg",
+        "text": "Текст поста 2.",
+        "pub_date": "2023-08-09T12:10:21.084589Z",
+        "group": null
+    }
+    ]
+2. `GET` запрос на эндпоинт  http://127.0.0.1:8000/api/v1/groups/
 
-Для доступа к API необходимо получить токен: 
-
-Нужно выполнить POST-запрос localhost:8000/api/v1/token/ передав поля username и password. API вернет JWT-токен
-
-Дальше, передав токен можно будет обращаться к методам, например: 
-
-/api/v1/posts/ (GET, POST, PUT, PATCH, DELETE)
-
-При отправке запроса передавайте токен в заголовке Authorization: Bearer <токен>
-
-Автор: Епихин Александр
+    ```
+    {
+        "id": 1,
+        "title": "Название группы 1",
+        "slug": "slug-группы 1",
+        "description": "Описание группы 1"
+   },
+   {
+        "id": 2,
+        "title": "Название группы 2",
+        "slug": "slug-группы 2 ",
+        "description": "Описание группы 2"
+   } 
+    ```
